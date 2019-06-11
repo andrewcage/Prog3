@@ -1,7 +1,7 @@
 var LivingCreature = require("./LivingCreature.js")
 var random = require("./random.js")
 
-module.export = class Grass extends LivingCreature {
+module.exports = class Grass extends LivingCreature {
 
     mul() {
         this.multiply++;

@@ -1,5 +1,6 @@
 
 //! Requiring modules  --  START
+var LivingCreature = require("./modules/LivingCreature.js")
 var Grass = require("./modules/Grass.js");
 var GrassEater = require("./modules/GrassEater.js");
 var Predator = require("./modules/Predator.js")
@@ -11,17 +12,20 @@ let random = require("./modules/random.js");
 //! Setting global arrays  --  START
 grassArr = [];
 grassEaterArr = [];
-predArr = []
-smugArr = []
+predArr = [];
+smugArr = [];
 matrix = [];
-grassHashiv = 0;
+xotHashiv = 0;
+xotakerHashiv = 0;
+gishoHashiv = 0;
+
 //! Setting global arrays  -- END
 
 
 
 
 //! Creating MATRIX -- START
-function matrixGenerator(matrixSize, grass, grassEater, grassEaterEater, predArr, smugArr) {
+function matrixGenerator(matrixSize, grass, grassEater, pred, smug) {
     for (let i = 0; i < matrixSize; i++) {
         matrix[i] = [];
         for (let o = 0; o < matrixSize; o++) {
@@ -86,11 +90,12 @@ function creatingObjects() {
             else if (matrix[y][x] == 1) {
                 var grass = new Grass(x, y);
                 grassArr.push(grass);
-                grassHashiv++;
+                xotHashiv++;
             }
 
         }
     }
+}
     creatingObjects();
 
     function game() {
@@ -99,22 +104,31 @@ function creatingObjects() {
                 grassArr[i].mul();
             }
         }
-        if (grassEaterArr[0] !== undefined) {
+        else if (grassEaterArr[0] !== undefined) {
             for (var i in grassEaterArr) {
+                grassEaterArr[i].move();
                 grassEaterArr[i].eat();
+                grassEaterArr[i].mul();
+                grassEaterArr[i].die();
+            }
+        }
+        else if (predArr[0] !== undefined) {
+            for(var i in predArr) {
+                predArr[i].move()
+                predArr[i].eat()
+                predArr[i].mul()
+                predArr[i].die()
             }
         }
 
         //! Object to send
         let sendData = {
             matrix: matrix,
-            grassCounter: grassHashiv
+            grassCounter: xotHashiv
         }
 
         //! Send data over the socket to clients who listens "data"
         io.sockets.emit("data", sendData);
     }
-
-
 
     setInterval(game, 1000)
